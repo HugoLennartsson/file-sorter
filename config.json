@@ -1,0 +1,12 @@
+{
+    "track_path": "C:/test",
+    "mappings": {
+        ".pdf": "Documents",
+        ".docx": "Documents",
+        ".txt": "Documents",
+        ".jpg": "Images",
+        ".png": "Images",
+        ".mp4": "Videos",
+        ".zip": "Archives"
+    }
+}

@@ -1,67 +1,47 @@
-import os
-import shutil
-import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import tkinter as tk
+from tkinter import messagebox
+from settings_gui import SettingsApp # Import your existing GUI class
+from sorter_engine import SorterInstance
+import threading
 
+class MainApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Auto File Sorter Pro")
+        self.root.geometry("400x300")
+        self.sorter = SorterInstance()
+        
+        # UI Elements
+        tk.Label(root, text="File Sorter Control Panel", font=("Arial", 16, "bold")).pack(pady=20)
+        
+        self.status_label = tk.Label(root, text="Status: Stopped", fg="red", font=("Arial", 12))
+        self.status_label.pack(pady=10)
 
-FOLDER_TO_TRACK = "C:\\Users\\hugol\\OneDrive\\Desktop\\TestDownloads"
+        self.start_btn = tk.Button(root, text="Start Sorter", width=20, bg="#4CAF50", fg="white", command=self.toggle_sorter)
+        self.start_btn.pack(pady=5)
 
-
-FOLDER_MAPPING = {
-    ".pdf": "Documents",
-    ".docx": "Documents",
-    ".txt": "Documents",
-    ".jpg": "Images",
-    ".png": "Images",
-    ".mp4": "Videos",
-    ".zip": "Archives",
-}
-
-def move_file(file_path):
+        tk.Button(root, text="Settings", width=20, command=self.open_settings).pack(pady=5)
+        tk.Button(root, text="Exit", width=20, command=root.quit).pack(pady=5)
     
-    if os.path.isdir(file_path): 
-        return
-    
-    filename = os.path.basename(file_path)
-    
-    extension = os.path.splitext(filename)[1].lower()
+    def toggle_sorter(self):
+        if not self.sorter.running:
+            try:
+                self.sorter.start()
+                self.status_label.config(text="Status: Running...", fg="green")
+                self.start_btn.config(text="Stop Sorter", bg="#f44336")
+            except Exception as e:
+                messagebox.showerror("Error", f"Could not start: {e}")
+        else:
+            self.sorter.stop()
+            self.status_label.config(text="Status: Stopped", fg="red")
+            self.start_btn.config(text="Start Sorter", bg="#4CAF50")
 
-    if extension in FOLDER_MAPPING:
-        target_folder = os.path.join(FOLDER_TO_TRACK, FOLDER_MAPPING[extension])
-        os.makedirs(target_folder, exist_ok=True)
-
-        destination = os.path.join(target_folder, filename)
-        if os.path.exists(destination):
-            print(f"Skipping {filename}, already exists in destination.")
-            return
-
-        print(f"Moving {filename} to {FOLDER_MAPPING[extension]}/")
-        shutil.move(file_path, destination)
-
-
-class FileHandler(FileSystemEventHandler):
-    def on_created(self, event):
-       
-        if not event.is_directory:
-            time.sleep(1)
-           
-            move_file(event.src_path)
+    def open_settings(self):
+        # Open the settings window as a popup
+        settings_window = tk.Toplevel(self.root)
+        SettingsApp(settings_window)
 
 if __name__ == "__main__":
-    print(f"Monitoring folder: {FOLDER_TO_TRACK}")
-        
-    event_handler = FileHandler()
-    observer = Observer()
-    observer.schedule(event_handler, FOLDER_TO_TRACK, recursive=False)
-    observer.start()
-
-    try:
-        while True:
-            time.sleep(10)
-    except KeyboardInterrupt:
-        observer.stop()
-        print("\nStopping script.")
-    
-   
-    observer.join()
+    root = tk.Tk()
+    app = MainApp(root)
+    root.mainloop()

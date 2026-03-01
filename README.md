@@ -5,21 +5,24 @@
 
 ## 🚀 Features
 
-* **Automated Monitoring:** Uses the `watchdog` library to detect new files instantly.
-* **Customizable Rules:** Define destination folders for different file extensions in a simple `config.json` file.
-* **Error Handling:** Prevents crashes if a file is already in use or a naming conflict occurs.
-* **Detailed Logging:** Maintains a log of all moved files for auditing.
+* **Real-time Monitoring:** Instantly detects new files using the `watchdog` library.
+* **Graphical User Interface (GUI):** Easy-to-use desktop app to start/stop the sorter and manage settings.
+* **Customizable Mapping:** Define destination subfolders for specific file extensions via a visual interface.
+* **Error Handling:** Safe file movement prevents data loss or crashes during naming conflicts.
+
+
 
 ## 🛠️ Tech Stack
 
 * **Language:** Python 3
-* **Libraries:** `os`, `shutil`, `watchdog`, `json`
+* **GUI Framework:** Tkinter (Built-in)
+* **Libraries:** `watchdog`, `json`, `shutil`
 
 ## 📦 Installation & Setup
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/HugoLennartsson/file-sorter.git
+    git clone [https://github.com/HugoLennartsson/file-sorter.git](https://github.com/HugoLennartsson/file-sorter.git)
     cd file-sorter
     ```
 
@@ -27,9 +30,10 @@
     ```bash
     pip install watchdog
     ```
+
 ## 💻 Usage
 
-To start the automated sorting, run the following command in your terminal:
+Run the main application file to launch the control panel:
 
 ```bash
 python main.py
