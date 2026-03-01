@@ -22,7 +22,7 @@
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/HugoLennartsson/file-sorter.git](https://github.com/HugoLennartsson/file-sorter.git)
+    git clone https://github.com/HugoLennartsson/file-sorter.git
     cd file-sorter
     ```
 
