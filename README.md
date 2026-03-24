@@ -83,10 +83,3 @@ Settings are stored in `config.json` in the application directory:
     }
 }
 ```
-
-## 📸 Screenshots
-
-The application features a modern, clean interface with:
-- Status indicator showing running/stopped state
-- Large, accessible buttons for primary actions
-- Visual settings panel with scrollable mapping list
