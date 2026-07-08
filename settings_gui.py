@@ -10,8 +10,7 @@ class SettingsApp:
         self.root.title("Settings")
         self.root.geometry("600x600")
         self.root.resizable(False, False)
-
-        # Modern color scheme
+        self.root.attributes("-topmost", False)
         self.colors = {
             "bg": "#f5f5f5",
             "card_bg": "#ffffff",
@@ -250,9 +249,16 @@ class SettingsApp:
             self.config = {"track_path": "", "mappings": {}}
 
     def browse_folder(self):
-        selected_path = filedialog.askdirectory()
-        if selected_path:
-            self.path_var.set(selected_path)
+        if self.browse_btn["state"] == "disabled":
+            return
+        self.browse_btn.config(state="disabled")
+        try:
+            selected_path = filedialog.askdirectory(parent=self.root)
+            if selected_path:
+                self.path_var.set(selected_path)
+        finally:
+            self.browse_btn.config(state="normal")
+
 
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")

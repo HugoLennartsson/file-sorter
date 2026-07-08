@@ -9,7 +9,7 @@ import json
 class MainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Auto File Sorter Pro")
+        self.root.title("File sorter")
         self.root.geometry("450x500")
         self.root.resizable(False, False)
 
@@ -174,10 +174,16 @@ class MainApp:
             self.start_btn.config(text="Start Sorter", bg=self.colors["success"])
 
     def open_settings(self):
-        settings_window = tk.Toplevel(self.root)
-        settings_window.attributes("-topmost", True)
-        SettingsApp(settings_window)
+        if hasattr(self, "settings_window") and self.settings_window is not None and self.settings_window.winfo_exists():
+            self.settings_window.lift()
+            self.settings_window.focus_force()
+            return
+        self.settings_window = tk.Toplevel(self.root)
+        self.settings_window.attributes("-topmost", True)
+        SettingsApp(self.settings_window)
 
+        self.settings_window.transient(self.root)
+        self.settings_window.grab_set() 
 
 if __name__ == "__main__":
     root = tk.Tk()
