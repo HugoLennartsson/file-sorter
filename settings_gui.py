@@ -8,7 +8,7 @@ class SettingsApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Settings")
-        self.root.geometry("600x600")
+        self.root.geometry("600x850")
         self.root.resizable(False, False)
         self.root.attributes("-topmost", False)
         self.colors = {
@@ -26,7 +26,6 @@ class SettingsApp:
 
         self.root.configure(bg=self.colors["bg"])
 
-        # Fonts
         self.font_title = font.Font(family="Segoe UI", size=16, weight="bold")
         self.font_heading = font.Font(family="Segoe UI", size=11, weight="bold")
         self.font_normal = font.Font(family="Segoe UI", size=10)
@@ -36,13 +35,14 @@ class SettingsApp:
         self.config_path = "config.json"
         self.load_settings()
 
-        # Main container
         main_frame = tk.Frame(root, bg=self.colors["bg"])
         main_frame.pack(fill="both", expand=True, padx=25, pady=20)
 
-        # Header
+        header_container = tk.Frame(main_frame, bg=self.colors["bg"])
+        header_container.pack(fill="x")
+
         tk.Label(
-            main_frame,
+            header_container,
             text="Settings",
             font=self.font_title,
             bg=self.colors["bg"],
@@ -50,16 +50,56 @@ class SettingsApp:
         ).pack(anchor="w", pady=(0, 5))
 
         tk.Label(
-            main_frame,
+            header_container,
             text="Configure folder monitoring and file mappings",
             font=self.font_normal,
             bg=self.colors["bg"],
             fg=self.colors["text_secondary"]
         ).pack(anchor="w", pady=(0, 20))
 
-        # Folder to Monitor section
+
+        buttons_container = tk.Frame(main_frame, bg=self.colors["bg"])
+        buttons_container.pack(side="bottom", fill="x", pady=20)
+
+        self.save_btn = tk.Button(
+            buttons_container,
+            text="Save Settings",
+            font=self.font_button,
+            bg=self.colors["success"],
+            fg="white",
+            relief="flat",
+            cursor="hand2",
+            command=self.save_settings,
+            activebackground="#388E3C",
+            activeforeground="white",
+            padx=30,
+            pady=8
+        )
+        self.save_btn.pack(side="right")
+
+        self.cancel_btn = tk.Button(
+            buttons_container,
+            text="Cancel",
+            font=self.font_button,
+            bg=self.colors["card_bg"],
+            fg=self.colors["text_secondary"],
+            relief="flat",
+            cursor="hand2",
+            command=root.destroy,
+            activebackground="#ffebee",
+            activeforeground=self.colors["error"],
+            padx=20,
+            pady=8
+        )
+        self.cancel_btn.pack(side="right", padx=(0, 10))
+
+
+        mappings_container = tk.Frame(main_frame, bg=self.colors["bg"])
+        mappings_container.pack(side="top", fill="both", expand=True)
+
+     
         section_card = tk.Frame(
-            main_frame,
+            mappings_container,
             bg=self.colors["card_bg"],
             highlightbackground=self.colors["border"],
             highlightthickness=1
@@ -86,7 +126,7 @@ class SettingsApp:
             wraplength=500
         ).pack(anchor="w", pady=(0, 15))
 
-        # Path entry with browse button
+   
         path_frame = tk.Frame(inner_frame, bg=self.colors["card_bg"])
         path_frame.pack(fill="x")
 
@@ -119,9 +159,8 @@ class SettingsApp:
         )
         self.browse_btn.pack(side="right", padx=(10, 0))
 
-        # File Mappings section
         mapping_card = tk.Frame(
-            main_frame,
+            mappings_container,
             bg=self.colors["card_bg"],
             highlightbackground=self.colors["border"],
             highlightthickness=1
@@ -131,7 +170,6 @@ class SettingsApp:
         mapping_inner = tk.Frame(mapping_card, bg=self.colors["card_bg"])
         mapping_inner.pack(fill="both", padx=20, pady=20)
 
-        # Header row
         header_frame = tk.Frame(mapping_inner, bg=self.colors["card_bg"])
         header_frame.pack(fill="x", pady=(0, 10))
 
@@ -166,11 +204,9 @@ class SettingsApp:
             fg=self.colors["text_secondary"]
         ).pack(anchor="w", pady=(0, 15))
 
-        # Scrollable frame for mappings
         self.mappings_frame = tk.Frame(mapping_inner, bg=self.colors["bg"])
         self.mappings_frame.pack(fill="both", expand=True)
 
-        # Canvas for scrolling
         self.canvas = tk.Canvas(
             self.mappings_frame,
             bg=self.colors["card_bg"],
@@ -195,50 +231,11 @@ class SettingsApp:
         self.canvas.pack(side="left", fill="both", expand=True, padx=(0, 5))
         self.scrollbar.pack(side="right", fill="y")
 
-        # Bind mouse wheel for scrolling
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
-        # Store mapping rows
         self.mapping_rows = []
         self.load_mappings()
 
-        # Button area
-        btn_frame = tk.Frame(main_frame, bg=self.colors["bg"])
-        btn_frame.pack(fill="x", pady=20)
-
-        self.save_btn = tk.Button(
-            btn_frame,
-            text="Save Settings",
-            font=self.font_button,
-            bg=self.colors["success"],
-            fg="white",
-            relief="flat",
-            cursor="hand2",
-            command=self.save_settings,
-            activebackground="#388E3C",
-            activeforeground="white",
-            padx=30,
-            pady=8
-        )
-        self.save_btn.pack(side="right")
-
-        self.cancel_btn = tk.Button(
-            btn_frame,
-            text="Cancel",
-            font=self.font_button,
-            bg=self.colors["card_bg"],
-            fg=self.colors["text_secondary"],
-            relief="flat",
-            cursor="hand2",
-            command=root.destroy,
-            activebackground="#ffebee",
-            activeforeground=self.colors["error"],
-            padx=20,
-            pady=8
-        )
-        self.cancel_btn.pack(side="right", padx=(0, 10))
-
-        # Handle window close button
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def load_settings(self):
@@ -268,7 +265,6 @@ class SettingsApp:
         row_frame = tk.Frame(self.scrollable_frame, bg=self.colors["row_bg"])
         row_frame.pack(fill="x", padx=5, pady=3)
 
-        # Extension field
         ext_frame = tk.Frame(row_frame, bg=self.colors["row_bg"])
         ext_frame.pack(side="left", padx=(5, 10))
 
@@ -294,7 +290,6 @@ class SettingsApp:
         )
         ext_entry.pack(side="left", ipady=4)
 
-        # Folder field
         folder_frame = tk.Frame(row_frame, bg=self.colors["row_bg"])
         folder_frame.pack(side="left", padx=10)
 
@@ -320,7 +315,6 @@ class SettingsApp:
         )
         folder_entry.pack(side="left", ipady=4)
 
-        # Remove button
         remove_btn = tk.Button(
             row_frame,
             text="X",
@@ -362,14 +356,12 @@ class SettingsApp:
         try:
             new_path = self.path_var.get()
 
-            # Collect mappings from rows
             new_mappings = {}
             for row in self.mapping_rows:
                 ext = row["ext_var"].get().strip().lower()
                 folder = row["folder_var"].get().strip()
 
                 if ext and folder:
-                    # Ensure extension starts with dot
                     if not ext.startswith("."):
                         ext = "." + ext
                     new_mappings[ext] = folder
@@ -389,9 +381,3 @@ class SettingsApp:
     def on_close(self):
         """Auto-save on window close."""
         self.save_settings(show_message=False)
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = SettingsApp(root)
-    root.mainloop()
