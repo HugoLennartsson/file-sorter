@@ -233,8 +233,15 @@ class SettingsApp:
 
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
+        self.canvas.bind("<Enter>", self._bind_mousewheel)
+        self.canvas.bind("<Leave>", self._unbind_mousewheel)
+
         self.mapping_rows = []
         self.load_mappings()
+
+        self.canvas.unbind_all("<MouseWheel>")
+        self.canvas.bind("<Enter>", self._bind_mousewheel)
+        self.canvas.bind("<Leave>", self._unbind_mousewheel)
 
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -381,3 +388,12 @@ class SettingsApp:
     def on_close(self):
         """Auto-save on window close."""
         self.save_settings(show_message=False)
+    
+    def _bind_mousewheel(self, event):
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self, event):
+        self.canvas.unbind_all("<MouseWheel>")
+    
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-event.delta / 120), "units")
