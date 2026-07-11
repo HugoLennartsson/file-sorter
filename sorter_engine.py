@@ -13,7 +13,7 @@ class FileHandler(FileSystemEventHandler):
 
     def on_created(self, event):
         if not event.is_directory:
-            time.sleep(1) # Wait for download to finish
+            time.sleep(1)
             self.move_file(event.src_path)
 
     def move_file(self, file_path):
@@ -63,7 +63,7 @@ class SorterInstance:
         for item in os.listdir(folder_path):
             file_path = os.path.join(folder_path, item)
 
-            # Skip directories
+       
             if not os.path.isfile(file_path):
                 continue
 

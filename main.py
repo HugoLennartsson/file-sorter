@@ -13,7 +13,6 @@ class MainApp:
         self.root.geometry("450x500")
         self.root.resizable(False, False)
 
-        # Modern color scheme
         self.colors = {
             "bg": "#f5f5f5",
             "card_bg": "#ffffff",
@@ -28,10 +27,8 @@ class MainApp:
             "border": "#e0e0e0",
         }
 
-        # Set background
         self.root.configure(bg=self.colors["bg"])
 
-        # Modern fonts
         self.font_title = font.Font(family="Segoe UI", size=18, weight="bold")
         self.font_heading = font.Font(family="Segoe UI", size=12, weight="bold")
         self.font_normal = font.Font(family="Segoe UI", size=10)
@@ -39,11 +36,9 @@ class MainApp:
 
         self.sorter = SorterInstance()
 
-        # Main container with padding
         main_frame = tk.Frame(root, bg=self.colors["bg"])
         main_frame.pack(fill="both", expand=True, padx=30, pady=25)
 
-        # Header
         header_frame = tk.Frame(main_frame, bg=self.colors["bg"])
         header_frame.pack(fill="x", pady=(0, 20))
 
@@ -63,7 +58,6 @@ class MainApp:
             fg=self.colors["text_secondary"]
         ).pack(anchor="w", pady=(2, 0))
 
-        # Status card
         status_card = tk.Frame(
             main_frame,
             bg=self.colors["card_bg"],
@@ -81,18 +75,15 @@ class MainApp:
         )
         self.status_label.pack(pady=20)
 
-        # Separator line
         tk.Frame(
             status_card,
             height=1,
             bg=self.colors["border"]
         ).pack(fill="x")
 
-        # Button area
         btn_frame = tk.Frame(main_frame, bg=self.colors["bg"])
         btn_frame.pack(fill="x", pady=15)
 
-        # Start/Stop button
         self.start_btn = tk.Button(
             btn_frame,
             text="Start Sorter",
@@ -108,7 +99,6 @@ class MainApp:
         )
         self.start_btn.pack(fill="x", pady=5)
 
-        # Settings button
         settings_btn = tk.Button(
             btn_frame,
             text="Settings",
@@ -124,7 +114,6 @@ class MainApp:
         )
         settings_btn.pack(fill="x", pady=5)
 
-        # Exit button
         exit_btn = tk.Button(
             btn_frame,
             text="Exit",
@@ -140,7 +129,7 @@ class MainApp:
         )
         exit_btn.pack(fill="x", pady=5)
 
-        # Footer
+        
         footer = tk.Frame(main_frame, bg=self.colors["bg"])
         footer.pack(fill="x", side="bottom")
 
@@ -155,14 +144,12 @@ class MainApp:
     def toggle_sorter(self):
         if not self.sorter.running:
             try:
-                # Sort existing files first
                 with open("config.json", "r", encoding="utf-8") as f:
                     config = json.load(f)
                 folder_path = config["track_path"]
                 folder_mapping = config["mappings"]
                 self.sorter.sort_existing_files(folder_path, folder_mapping)
 
-                # Then start watching for new files
                 self.sorter.start()
                 self.status_label.config(text="Status: Running", fg=self.colors["success"])
                 self.start_btn.config(text="Stop Sorter", bg=self.colors["danger"])

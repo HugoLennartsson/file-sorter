@@ -189,7 +189,7 @@ class SettingsApp:
             fg="white",
             relief="flat",
             cursor="hand2",
-            command=self.add_mapping_row,
+            command=lambda: self.add_mapping_row(scroll_to_new=True),
             activebackground=self.colors["primary_hover"],
             activeforeground="white",
             padx=15,
@@ -267,7 +267,7 @@ class SettingsApp:
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    def add_mapping_row(self, extension="", folder=""):
+    def add_mapping_row(self, extension="", folder="", scroll_to_new=False):
         """Add a new extension-to-folder mapping row."""
         row_frame = tk.Frame(self.scrollable_frame, bg=self.colors["row_bg"])
         row_frame.pack(fill="x", padx=5, pady=3)
@@ -343,6 +343,12 @@ class SettingsApp:
             "ext_var": ext_var,
             "folder_var": folder_var
         })
+        
+        if scroll_to_new:
+            self.scrollable_frame.update_idletasks()
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            self.canvas.yview_moveto(1.0)
+            ext_entry.focus_set()
 
     def remove_mapping_row(self, row_frame, ext_var, folder_var):
         """Remove a mapping row."""
